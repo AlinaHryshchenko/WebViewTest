@@ -35,6 +35,7 @@ final class LoadingViewModel: LoadingViewModelProtocol {
         self.coordinator = coordinator
     }
     
+    // MARK: - Flow Actions
     func startWebViewFlow() {
         if isCanada {
             coordinator.startWebViewFlow()
@@ -47,6 +48,7 @@ final class LoadingViewModel: LoadingViewModelProtocol {
         coordinator.startDataListFlow()
     }
     
+    // MARK: - Loading Animation
     func startLoadingAnimation() {
         let duration = 3.0
         let steps = 100
@@ -67,6 +69,7 @@ final class LoadingViewModel: LoadingViewModelProtocol {
         }
     }
     
+    // MARK: - IP Location Check
     func checkIfUserIsInCanada() {
             let url = URL(string: "https://ipinfo.io/json")!
             
@@ -95,6 +98,7 @@ final class LoadingViewModel: LoadingViewModelProtocol {
             task.resume()
         }
     
+    // MARK: - Deinitialization
     deinit {
         timer?.invalidate()
     }

@@ -22,15 +22,18 @@ class WebViewModel: NSObject, ObservableObject {
     
     private var cancellables = Set<AnyCancellable>()
     
+    // MARK: - Initialization
     override init() {
         super.init()
         self.setupWebView()
     }
     
+    // MARK: - Setup WebView
     private func setupWebView() {
         webView.navigationDelegate = self
     }
     
+    // MARK: - WebView Navigation Methods
     func load(_ url: URL) {
             let request = URLRequest(url: url)
             webView.load(request)
@@ -45,6 +48,7 @@ class WebViewModel: NSObject, ObservableObject {
     }
 }
 
+// MARK: - WKNavigationDelegate
 extension WebViewModel: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         DispatchQueue.main.async {

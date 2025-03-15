@@ -8,8 +8,6 @@
 import Foundation
 import SwiftUI
 
-import SwiftUI
-
 struct LoadingView<ViewModel: LoadingViewModelProtocol>: View {
     @ObservedObject private var viewModel: ViewModel
     
@@ -27,6 +25,7 @@ struct LoadingView<ViewModel: LoadingViewModelProtocol>: View {
             
             VStack {
                 if viewModel.isLoading {
+                    // Loading State
                     ProgressView(value: viewModel.progress, total: 1.0)
                         .progressViewStyle(LinearProgressViewStyle())
                         .frame(height: 8)
@@ -39,6 +38,7 @@ struct LoadingView<ViewModel: LoadingViewModelProtocol>: View {
                         .padding(.top, 20)
                 } else {
                     if viewModel.showButtons {
+                        //  Loaded State
                         Button(action: {
                             viewModel.startWebViewFlow()
                         }) {
