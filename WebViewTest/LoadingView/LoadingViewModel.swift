@@ -12,8 +12,8 @@ protocol LoadingViewModelProtocol: ObservableObject {
     var progress: Double { get }
     var isLoading: Bool { get }
     var showButtons: Bool { get }
-    var isCanada: Bool { get }
     var showAlert: Bool { get set }
+    
     func startWebViewFlow()
     func startDataListFlow()
     func startLoadingAnimation()
@@ -24,11 +24,12 @@ final class LoadingViewModel: LoadingViewModelProtocol {
     @Published var progress: Double = 0.0
     @Published var isLoading: Bool = true
     @Published var showButtons: Bool = false
-    @Published var isCanada: Bool = false
     @Published var showAlert: Bool = false
+    @Published var errorMessage: String? = nil
     
     private let coordinator: LoadingViewCoordinatorProtocol
     private var timer: Timer?
+    private var isCanada: Bool = false
     
     // MARK: - Initialization
     init(coordinator: LoadingViewCoordinatorProtocol) {
@@ -37,11 +38,11 @@ final class LoadingViewModel: LoadingViewModelProtocol {
     
     // MARK: - Flow Actions
     func startWebViewFlow() {
-        if isCanada {
-            coordinator.startWebViewFlow()
-        } else {
+        guard isCanada else {
             showAlert = true
+            return
         }
+        coordinator.startWebViewFlow()
     }
     
     func startDataListFlow() {
@@ -57,7 +58,7 @@ final class LoadingViewModel: LoadingViewModelProtocol {
         
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] timer in
             guard let self = self else { return }
-                self.progress = min(self.progress + increment, 1.0)
+            self.progress = min(self.progress + increment, 1.0)
             
             
             if self.progress >= 1.0 {
@@ -71,35 +72,30 @@ final class LoadingViewModel: LoadingViewModelProtocol {
     
     // MARK: - IP Location Check
     func checkIfUserIsInCanada() {
-            let url = URL(string: "https://ipinfo.io/json")!
-            
-            let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-                guard let data = data, error == nil else {
-                    print("Error fetching IP location: \(String(describing: error))")
-                    return
-                }
-                
-                do {
-                    let json = try JSONDecoder().decode(IPInfoResponse.self, from: data)
-                    if json.country == "CA" {
-                        DispatchQueue.main.async {
-                            self?.isCanada = true
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            self?.isCanada = false
-                        }
-                    }
-                } catch {
-                    print("Error parsing IP geolocation data: \(error)")
-                }
+        let url = URL(string: "https://ipinfo.io/json")!
+        
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self else { return }
+            guard let data = data, error == nil else {
+                self.errorMessage = "Invalid data received from the server."
+                self.showAlert = true
+                return
             }
-            
-            task.resume()
+            do {
+                let info = try JSONDecoder().decode(IPInfoResponse.self, from: data)
+                isCanada = info.country == "CA"
+            } catch {
+                self.errorMessage = "Network error: \(error.localizedDescription)"
+                self.showAlert = true
+            }
         }
+        
+        task.resume()
+    }
     
     // MARK: - Deinitialization
     deinit {
         timer?.invalidate()
+        timer = nil
     }
 }

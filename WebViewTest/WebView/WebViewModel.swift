@@ -13,7 +13,7 @@ protocol WebViewModelProtocol: ObservableObject  {
     func goBack()
     func goForward()
     func closeWebView()
-    func load(_ url: URL) 
+    func load(_ url: URL)
 }
 
 class WebViewModel: NSObject, ObservableObject {
@@ -35,9 +35,9 @@ class WebViewModel: NSObject, ObservableObject {
     
     // MARK: - WebView Navigation Methods
     func load(_ url: URL) {
-            let request = URLRequest(url: url)
-            webView.load(request)
-        }
+        let request = URLRequest(url: url)
+        webView.load(request)
+    }
     
     func goBack() {
         webView.goBack()
@@ -51,20 +51,14 @@ class WebViewModel: NSObject, ObservableObject {
 // MARK: - WKNavigationDelegate
 extension WebViewModel: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        DispatchQueue.main.async {
-            self.isLoading = true
-        }
+        isLoading = true
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        DispatchQueue.main.async {
-            self.isLoading = false
-        }
+        isLoading = false
     }
     
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        DispatchQueue.main.async {
-            self.isLoading = false
-        }
+        isLoading = false
     }
 }

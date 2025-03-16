@@ -139,7 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				9ADEA1712D84EFA300EA092B /* DataListView */,
-				9ADEA17C2D84FCC800EA092B /* Extention */,
+				9ADEA17C2D84FCC800EA092B /* Extension */,
 				9A04CB202D85D85C00A1A319 /* ImagePicker */,
 				9ADEA15F2D84D47F00EA092B /* LoadingView */,
 				9A04CB212D85D87900A1A319 /* MainCoordinator */,
@@ -193,12 +193,12 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		9ADEA17C2D84FCC800EA092B /* Extention */ = {
+		9ADEA17C2D84FCC800EA092B /* Extension */ = {
 			isa = PBXGroup;
 			children = (
 				9ADEA1782D84FBBA00EA092B /* Bundle+Ext.swift */,
 			);
-			path = Extention;
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -37,9 +37,7 @@ struct WebView: UIViewRepresentable {
         }
         
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            DispatchQueue.main.async {
-                self.parent.viewModel.isLoading = false
-            }
+            parent.viewModel.isLoading = false
         }
         
         // MARK: - Intercept Payment URLs
@@ -57,8 +55,6 @@ struct WebView: UIViewRepresentable {
                 }
                 
                 if containsPaymentKeyword || isPaymentDomain {
-                    print("The payment fee revealed: \(url)")
-                    
                     decisionHandler(.cancel)
                     
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
